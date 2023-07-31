@@ -20,6 +20,7 @@ public class HelloServiceImpl implements HelloService {
 
     @Override
     public List<User> getFriends(User user) {
+        int a = 1/0;
         return user.getFriends();
     }
 }

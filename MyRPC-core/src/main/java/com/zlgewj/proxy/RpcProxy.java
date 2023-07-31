@@ -63,6 +63,6 @@ public class RpcProxy implements MethodInterceptor {
         RpcResponse<Object> response = null;
         Promise<RpcResponse<Object>> promise = (Promise<RpcResponse<Object>>) client.sendRequest(build);
         promise.await();
-        return promise.getNow().getData();
+        return promise.get().getData();
     }
 }

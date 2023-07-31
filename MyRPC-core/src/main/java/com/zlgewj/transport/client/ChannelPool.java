@@ -2,7 +2,6 @@ package com.zlgewj.transport.client;
 
 import io.netty.channel.Channel;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,15 +11,18 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version 1.0
  * @Date 2023/7/30 22:12
  */
-public class ChannelProvider {
+public class ChannelPool {
 
     private final Map<String, Channel> channelMap;
 
-    public ChannelProvider() {
+    private final Map<String, InetSocketAddress> inetSocketAddressMap;
+
+    public ChannelPool() {
         channelMap = new ConcurrentHashMap<>();
+        inetSocketAddressMap = new ConcurrentHashMap<>();
     }
 
-    public Channel get(InetSocketAddress inetSocketAddress) {
+    public Channel getChannel(InetSocketAddress inetSocketAddress) {
         String key = inetSocketAddress.toString();
         if (channelMap.containsKey(key)) {
             Channel channel = channelMap.get(key);
@@ -35,12 +37,17 @@ public class ChannelProvider {
 
     public void set(InetSocketAddress inetSocketAddress, Channel channel) {
         String key = inetSocketAddress.toString();
+        String channelId = channel.id().toString();
         channelMap.put(key, channel);
+        inetSocketAddressMap.put(channelId, inetSocketAddress);
     }
 
-    public void remove(InetSocketAddress inetSocketAddress) {
+    public void removeChannel(InetSocketAddress inetSocketAddress) {
         String key = inetSocketAddress.toString();
         channelMap.remove(key);
+    }
+    public InetSocketAddress getInetSocketAddress(String channelId) {
+        return inetSocketAddressMap.get(channelId);
     }
 
 }

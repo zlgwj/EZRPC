@@ -5,7 +5,6 @@ import com.zlgewj.pojo.User;
 import com.zlgewj.service.HelloService;
 import org.springframework.stereotype.Component;
 
-import java.nio.channels.MulticastChannel;
 import java.util.ArrayList;
 import java.util.List;
 

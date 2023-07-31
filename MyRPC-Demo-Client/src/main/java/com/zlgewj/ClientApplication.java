@@ -12,10 +12,16 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 @RpcScan(packages = {"com.zlgewj"})
 public class ClientApplication {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         AnnotationConfigApplicationContext annotationContext = new AnnotationConfigApplicationContext(ClientApplication.class);
         TestController controller = (TestController) annotationContext.getBean("testController");
+//        controller.test2();
+
+        String test = controller.test();
+        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+test);
+        Thread.sleep(3000);
         controller.test2();
+        controller.test();
 
 
     }

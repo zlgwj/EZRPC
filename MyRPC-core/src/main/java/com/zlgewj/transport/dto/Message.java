@@ -3,6 +3,7 @@ package com.zlgewj.transport.dto;
 import lombok.Data;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author zlgewj
@@ -17,6 +18,7 @@ public abstract class Message {
         MAP.put(2, RpcResponse.class);
         MAP.put(3, Ping.class);
         MAP.put(4, Pong.class);
+        MAP.put(0,ErrorMessage.class);
     }
     private String id;
 

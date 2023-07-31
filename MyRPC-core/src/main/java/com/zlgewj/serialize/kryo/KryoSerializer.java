@@ -5,8 +5,7 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.zlgewj.exception.SerializerException;
 import com.zlgewj.serialize.Serializer;
-import com.zlgewj.transport.dto.RpcRequest;
-import com.zlgewj.transport.dto.RpcResponse;
+import com.zlgewj.transport.dto.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -24,6 +23,7 @@ public class KryoSerializer implements Serializer {
         kryo.setRegistrationRequired(false);
         kryo.register(RpcRequest.class);
         kryo.register(RpcResponse.class);
+        kryo.register(ErrorMessage.class);
         return kryo;
     });
 

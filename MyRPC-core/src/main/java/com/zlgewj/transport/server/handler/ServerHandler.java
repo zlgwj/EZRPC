@@ -34,6 +34,20 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        log.info("server exception");
+        ctx.channel().close();
+        super.exceptionCaught(ctx, cause);
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        log.info("channel inactive....");
+        ctx.channel().close();
+        super.channelInactive(ctx);
+    }
+
+    @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof Message) {
             Message message = (Message) msg;
@@ -42,15 +56,22 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             if (messageType.equals(RpcRequest.class)) {
                 RpcRequest request = (RpcRequest) message;
                 Object service = serviceProvider.getService(request.getRpcServiceName());
-                Object invoke = invoke(service, request);
-                RpcResponse<Object> response = RpcResponse.builder()
-                        .data(invoke)
-                        .code(RpcMessageCode.SUCCESS)
-                        .requestId(request.getRequestId())
-                        .message("调用成功")
-                        .build();
-                log.info("resp - {}",response);
-                ctx.writeAndFlush(response);
+
+                try {
+                    Object invoke = invoke(service, request);
+                    RpcResponse<Object> response = RpcResponse.builder()
+                            .data(invoke)
+                            .code(RpcMessageCode.SUCCESS)
+                            .requestId(request.getRequestId())
+                            .message("调用成功")
+                            .build();
+                    log.info("resp - {}", response);
+                    ctx.writeAndFlush(response);
+                } catch (Exception e) {
+                    ErrorMessage errorMessage = new ErrorMessage(e.getCause().getMessage());
+                    ctx.writeAndFlush(errorMessage);
+                }
+
             } else if (messageType.equals(Ping.class)) {
                 log.info("pong....");
                 ctx.writeAndFlush(new Pong());
@@ -59,14 +80,10 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         super.channelRead(ctx, msg);
     }
 
-    private Object invoke(Object obj, RpcRequest request) throws RpcException {
+    private Object invoke(Object obj, RpcRequest request) throws Exception {
         Class<?> aClass = obj.getClass();
-        try {
-            Method method = aClass.getMethod(request.getMethodName(), request.getParamTypes());
-            return method.invoke(obj, request.getParameters());
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
-            throw new RpcException(e.getMessage());
-        }
+        Method method = aClass.getMethod(request.getMethodName(), request.getParamTypes());
+        return method.invoke(obj, request.getParameters());
+
     }
 }

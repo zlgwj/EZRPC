@@ -1,6 +1,5 @@
 package com.zlgewj.transport.codec;
 
-import cn.hutool.log.Log;
 import com.zlgewj.constants.SerializerConstant;
 import com.zlgewj.exception.SerializerException;
 import com.zlgewj.extension.ExtensionLoader;
@@ -35,7 +34,12 @@ public class RpcDecoder extends LengthFieldBasedFrameDecoder {
             byte[] bytes = new byte[length];
             buf.readBytes(bytes, 0, length);
             Serializer serializer = ExtensionLoader.getExtensionLoader(Serializer.class).getExtension(SerializerConstant.getSerializeType(serializerType));
-            return serializer.deserialize(bytes, Message.getMessageType(messageType));
+            if (Message.getMessageType(messageType) != null) {
+                return serializer.deserialize(bytes, Message.getMessageType(messageType));
+            }else {
+                return serializer.deserialize(bytes,Object.class);
+            }
+
         }catch (Exception e) {
             e.printStackTrace();
             throw new SerializerException("解码错误");
