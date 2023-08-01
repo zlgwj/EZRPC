@@ -16,7 +16,7 @@ import java.lang.reflect.Method;
 /**
  * @author zlgewj
  * @version 1.0
- * @Date 2023/7/31 15:19
+
  */
 @ChannelHandler.Sharable
 @Slf4j
@@ -54,7 +54,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
                 try {
                     Object invoke = invoke(service, request);
-                    RpcResponse<Object> response = RpcResponse.builder()
+                    RpcResponse response = RpcResponse.builder()
                             .data(invoke)
                             .code(RpcMessageCode.SUCCESS)
                             .requestId(request.getRequestId())
@@ -64,6 +64,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
                     ctx.writeAndFlush(response);
                 } catch (Exception e) {
                     ErrorMessage errorMessage = new ErrorMessage(e.getCause().getMessage());
+                    errorMessage.setRequestId(request.getRequestId());
                     ctx.writeAndFlush(errorMessage);
                 }
 

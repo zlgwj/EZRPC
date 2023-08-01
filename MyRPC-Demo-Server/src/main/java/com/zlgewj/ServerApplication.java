@@ -7,7 +7,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 /**
  * @author zlgewj
  * @version 1.0
- * @Date 2023/7/31 16:00
+
  */
 @RpcScan(packages = {"com.zlgewj"})
 public class ServerApplication {

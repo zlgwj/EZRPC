@@ -11,13 +11,14 @@ import com.zlgewj.utils.PropertiesUtil;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author zlgewj
  * @version 1.0
- * @Date 2023/7/31 13:13
+
  */
 public class ZkServiceProvider implements ServiceProvider {
 
@@ -52,6 +53,6 @@ public class ZkServiceProvider implements ServiceProvider {
     @Override
     public void publishService(RpcServiceDefinition rpcServiceDefinition) {
         addService(rpcServiceDefinition);
-        serviceRegistry.registerService(rpcServiceDefinition.getServiceName(), new InetSocketAddress(IPV4Util.getLocalHostExactAddress().getHostAddress(),PropertiesUtil.getServerPort()));
+        serviceRegistry.registerService(rpcServiceDefinition.getServiceName(), new InetSocketAddress(Objects.requireNonNull(IPV4Util.getLocalHostExactAddress()).getHostAddress(),PropertiesUtil.getServerPort()));
     }
 }

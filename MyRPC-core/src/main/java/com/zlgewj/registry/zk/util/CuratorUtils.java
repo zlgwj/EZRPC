@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  * Curator(zookeeper client) utils
  *
  * @author shuang.kou
- * @createTime 2020年05月31日 11:38:00
+ * @since  2020年05月31日 11:38:00
  */
 @Slf4j
 public final class CuratorUtils {
@@ -40,17 +40,11 @@ public final class CuratorUtils {
     private CuratorUtils() {
     }
 
-    /**
-     * Create persistent nodes. Unlike temporary nodes, persistent nodes are not removed when the client disconnects
-     *
-     * @param path node path
-     */
     public static void createPersistentNode(CuratorFramework zkClient, String path) {
         try {
             if (REGISTERED_PATH_SET.contains(path) || zkClient.checkExists().forPath(path) != null) {
                 log.info("The node already exists. The node is:[{}]", path);
             } else {
-                //eg: /my-rpc/github.javaguide.HelloService/127.0.0.1:9999
                 zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(path);
                 log.info("The node was created successfully. The node is:[{}]", path);
             }
@@ -60,12 +54,6 @@ public final class CuratorUtils {
         }
     }
 
-    /**
-     * Gets the children under a node
-     *
-     * @param rpcServiceName rpc service name eg:github.javaguide.HelloServicetest2version1
-     * @return All child nodes under the specified node
-     */
     public static List<String> getChildrenNodes(CuratorFramework zkClient, String rpcServiceName) {
         if (SERVICE_ADDRESS_MAP.containsKey(rpcServiceName)) {
             return SERVICE_ADDRESS_MAP.get(rpcServiceName);
@@ -81,10 +69,6 @@ public final class CuratorUtils {
         }
         return result;
     }
-
-    /**
-     * Empty the registry of data
-     */
     public static void clearRegistry(CuratorFramework zkClient, InetSocketAddress inetSocketAddress) {
         REGISTERED_PATH_SET.stream().parallel().forEach(p -> {
             try {
@@ -95,7 +79,7 @@ public final class CuratorUtils {
                 log.error("clear registry for path [{}] fail", p);
             }
         });
-        log.info("All registered services on the server are cleared:[{}]", REGISTERED_PATH_SET.toString());
+        log.info("All registered services on the server are cleared:[{}]", REGISTERED_PATH_SET);
     }
 
     public static CuratorFramework getZkClient() {
@@ -125,11 +109,7 @@ public final class CuratorUtils {
         return zkClient;
     }
 
-    /**
-     * Registers to listen for changes to the specified node
-     *
-     * @param rpcServiceName rpc service name eg:github.javaguide.HelloServicetest2version
-     */
+
     private static void registerWatcher(String rpcServiceName, CuratorFramework zkClient) throws Exception {
         String servicePath = ZK_REGISTER_ROOT_PATH + "/" + rpcServiceName;
         PathChildrenCache pathChildrenCache = new PathChildrenCache(zkClient, servicePath, true);

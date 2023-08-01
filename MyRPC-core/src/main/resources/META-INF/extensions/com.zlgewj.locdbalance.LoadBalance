@@ -1,0 +1,2 @@
+random=com.zlgewj.locdbalance.impl.RandomLoadBalance
+rotate=com.zlgewj.locdbalance.impl.RotateLoadBalance

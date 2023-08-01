@@ -17,7 +17,7 @@ import java.util.Random;
 /**
  * @author zlgewj
  * @version 1.0
- * @Date 2023/7/31 12:36
+
  */
 
 @Slf4j
@@ -56,8 +56,8 @@ public class RpcProxy implements MethodInterceptor {
                 .parameters(objects)
                 .build();
         try {
-            Promise<RpcResponse<Object>> promise;
-            promise = (Promise<RpcResponse<Object>>) client.sendRequest(build);
+            Promise<RpcResponse> promise;
+            promise = (Promise<RpcResponse>) client.sendRequest(build);
             promise.sync();
             return promise.getNow().getData();
         } catch (Exception e) {

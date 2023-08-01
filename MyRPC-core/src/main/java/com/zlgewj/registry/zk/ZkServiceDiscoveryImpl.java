@@ -2,10 +2,14 @@ package com.zlgewj.registry.zk;
 
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.zlgewj.constants.PropertyConstant;
 import com.zlgewj.exception.RpcException;
+import com.zlgewj.extension.ExtensionLoader;
+import com.zlgewj.locdbalance.LoadBalance;
 import com.zlgewj.registry.ServiceDiscovery;
 import com.zlgewj.registry.zk.util.CuratorUtils;
 import com.zlgewj.transport.dto.RpcRequest;
+import com.zlgewj.utils.PropertiesUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 
@@ -16,14 +20,14 @@ import java.util.List;
  * service discovery based on zookeeper
  *
  * @author shuang.kou
- * @createTime 2020年06月01日 15:16:00
+ * @since  2020年06月01日 15:16:00
  */
 @Slf4j
 public class ZkServiceDiscoveryImpl implements ServiceDiscovery {
-//    private final LoadBalance loadBalance;
+    private final LoadBalance loadBalance;
 
     public ZkServiceDiscoveryImpl() {
-//        this.loadBalance = ExtensionLoader.getExtensionLoader(LoadBalance.class).getExtension(LoadBalanceEnum.LOADBALANCE.getName());
+        loadBalance = ExtensionLoader.getExtensionLoader(LoadBalance.class).getExtension(PropertiesUtil.getProperty(PropertyConstant.LOAD_BALANCE));
     }
 
     @Override
@@ -35,7 +39,8 @@ public class ZkServiceDiscoveryImpl implements ServiceDiscovery {
             throw new RpcException("服务未找到"+rpcServiceName);
         }
         // load balancing
-        String targetServiceUrl = serviceUrlList.get(0);
+        System.out.println(serviceUrlList);
+        String targetServiceUrl = loadBalance.doSelect(serviceUrlList);
         log.info("Successfully found the service address:[{}]", targetServiceUrl);
         String[] socketAddressArray = targetServiceUrl.split(":");
         String host = socketAddressArray[0];

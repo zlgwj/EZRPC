@@ -15,12 +15,13 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
 
 /**
  * @author zlgewj
  * @version 1.0
- * @Date 2023/7/30 22:07
+
  */
 @Component
 @Slf4j
@@ -35,7 +36,7 @@ public class SpringBeanPostProcessor implements BeanPostProcessor {
     }
 
     @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessBeforeInitialization(Object bean,@Nonnull String beanName) throws BeansException {
         if (bean.getClass().isAnnotationPresent(RpcService.class)) {
             RpcService rpcService = bean.getClass().getAnnotation(RpcService.class);
             RpcServiceDefinition build = RpcServiceDefinition.builder()
@@ -51,7 +52,7 @@ public class SpringBeanPostProcessor implements BeanPostProcessor {
     }
 
     @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessAfterInitialization(Object bean,@Nonnull String beanName) throws BeansException {
         Class<?> aClass = bean.getClass();
         Field[] declaredFields = aClass.getDeclaredFields();
         for (Field declaredField : declaredFields) {

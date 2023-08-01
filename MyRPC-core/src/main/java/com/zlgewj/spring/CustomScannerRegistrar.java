@@ -2,6 +2,7 @@ package com.zlgewj.spring;
 
 import com.zlgewj.annotation.RpcScan;
 import com.zlgewj.annotation.RpcService;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ResourceLoaderAware;
@@ -12,11 +13,13 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.StandardAnnotationMetadata;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Nonnull;
+
 
 /**
  * @author zlgewj
  * @version 1.0
- * @Date 2023/7/30 21:45
+
  */
 @Slf4j
 public class CustomScannerRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware {
@@ -25,12 +28,12 @@ public class CustomScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
 
     private static final String BASE_PACKAGE_ATTRIBUTE_NAME = "packages";
     @Override
-    public void setResourceLoader(ResourceLoader resourceLoader) {
+    public void setResourceLoader(@NonNull ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 
     @Override
-    public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+    public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata,@Nonnull BeanDefinitionRegistry registry) {
         AnnotationAttributes annotationAttributes = AnnotationAttributes.fromMap(importingClassMetadata.getAnnotationAttributes(RpcScan.class.getName()));
         String[] basePackages = new String[0];
         if (annotationAttributes != null ) {

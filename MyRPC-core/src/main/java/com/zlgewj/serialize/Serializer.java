@@ -6,7 +6,7 @@ import com.zlgewj.extension.SPI;
 /**
  * @author zlgewj
  * @version 1.0
- * @Date 2023/7/30 18:27
+
  */
 @SPI
 public interface Serializer {

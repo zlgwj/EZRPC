@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author zlgewj
  * @version 1.0
- * @Date 2023/7/30 22:09
+
  */
 @Slf4j
 public class RpcClient {
@@ -42,7 +42,7 @@ public class RpcClient {
     private final Bootstrap bootstrap;
     private final NioEventLoopGroup eventLoopGroup;
 
-    private static AtomicInteger atomicInteger = new AtomicInteger(1);
+    private static final AtomicInteger atomicInteger =  new AtomicInteger(1);
 
     public RpcClient() {
         bootstrap = new Bootstrap();
@@ -52,22 +52,22 @@ public class RpcClient {
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS,5000)
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
-                    protected void initChannel(SocketChannel ch) throws Exception {
+                    protected void initChannel(SocketChannel ch) {
                         ChannelPipeline pipeline = ch.pipeline();
-                        pipeline.addLast(new IdleStateHandler(5,3,0, TimeUnit.SECONDS));
+                        pipeline.addLast(new IdleStateHandler(10,3,0, TimeUnit.SECONDS));
 //                        pipeline.addLast(new LoggingHandler());
                         pipeline.addLast(new RpcDecoder());
                         pipeline.addLast(new RpcEncoder());
                         pipeline.addLast(new ClientHandler());
                         pipeline.addLast(new ChannelDuplexHandler() {
                             @Override
-                            public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+                            public void userEventTriggered(ChannelHandlerContext ctx, Object evt) {
                                 IdleStateEvent event = (IdleStateEvent) evt;
                                 if (event.state() == IdleState.WRITER_IDLE) {
                                     ctx.writeAndFlush(new Ping());
                                 }
                                 if (event.state() == IdleState.READER_IDLE) {
-
+                                    ctx.channel().close();
                                 }
                             }
                         });
@@ -114,12 +114,12 @@ public class RpcClient {
     public Object sendRequest(RpcRequest request) throws RpcException {
         InetSocketAddress inetSocketAddress = discovery.lookupService(request);
         Channel channel = getChannel(inetSocketAddress);
-        DefaultPromise<RpcResponse<Object>> promise = new DefaultPromise<>(channel.eventLoop());
+        DefaultPromise<RpcResponse> promise = new DefaultPromise<>(channel.eventLoop());
         if (channel.isActive()) {
             responseContainer.put(request.getRequestId(),promise);
             channel.writeAndFlush(request).addListener((ChannelFutureListener) future -> {
                 if (future.isSuccess()) {
-                    log.info("发送成功",request);
+                    log.info("发送成功,{}",request);
                 }else {
                     future.channel().close();
                     promise.setFailure(future.cause());

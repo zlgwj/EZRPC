@@ -7,7 +7,7 @@ import com.zlgewj.extension.SPI;
 /**
  * @author zlgewj
  * @version 1.0
- * @Date 2023/7/31 13:11
+
  */
 @SPI
 public interface ServiceProvider {

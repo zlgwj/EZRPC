@@ -18,12 +18,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author zlgewj
  * @version 1.0
- * @Date 2023/7/31 10:57
+
  */
 @Component
 @Slf4j
@@ -40,7 +41,7 @@ public class RpcServer {
                 .group(boss, worker)
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
-                    protected void initChannel(SocketChannel ch) throws Exception {
+                    protected void initChannel(SocketChannel ch){
                         ChannelPipeline pipeline = ch.pipeline();
                         pipeline.addLast(new LoggingHandler());
                         pipeline.addLast(new IdleStateHandler(5,0,0, TimeUnit.SECONDS));
@@ -60,7 +61,7 @@ public class RpcServer {
                         });
                     }
                 });
-        ChannelFuture sync = serverBootstrap.bind(new InetSocketAddress(IPV4Util.getLocalHostExactAddress().getHostAddress(), PropertiesUtil.getServerPort()));
+        ChannelFuture sync = serverBootstrap.bind(new InetSocketAddress(Objects.requireNonNull(IPV4Util.getLocalHostExactAddress()).getHostAddress(), PropertiesUtil.getServerPort()));
         sync.addListener((ChannelFutureListener) future -> {
             if(future.isSuccess()) {
                 log.info("启动成功...");
