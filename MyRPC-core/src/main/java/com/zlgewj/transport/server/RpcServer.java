@@ -10,15 +10,12 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.zookeeper.data.Id;
 import org.springframework.stereotype.Component;
-import sun.security.acl.WorldGroupImpl;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
@@ -65,15 +62,13 @@ public class RpcServer {
                 });
         ChannelFuture sync = serverBootstrap.bind(new InetSocketAddress(IPV4Util.getLocalHostExactAddress().getHostAddress(), PropertiesUtil.getServerPort()));
         sync.addListener((ChannelFutureListener) future -> {
-            System.out.println(future.cause());
             if(future.isSuccess()) {
                 log.info("启动成功...");
             }
         });
         sync.channel().closeFuture().sync();
+        log.info("关闭。。。。。。");
         boss.shutdownGracefully();
         worker.shutdownGracefully();
-
     }
-
 }

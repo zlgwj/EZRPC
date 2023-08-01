@@ -6,9 +6,7 @@ import com.zlgewj.utils.IPV4Util;
 import com.zlgewj.utils.PropertiesUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
 
 /**
  * When the server  is closed, do something such as unregister all services

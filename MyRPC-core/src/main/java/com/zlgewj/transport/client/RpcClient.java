@@ -17,18 +17,16 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.DefaultPromise;
-import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author zlgewj
@@ -44,18 +42,20 @@ public class RpcClient {
     private final Bootstrap bootstrap;
     private final NioEventLoopGroup eventLoopGroup;
 
+    private static AtomicInteger atomicInteger = new AtomicInteger(1);
+
     public RpcClient() {
         bootstrap = new Bootstrap();
         eventLoopGroup = new NioEventLoopGroup();
         bootstrap.group(eventLoopGroup)
                 .channel(NioSocketChannel.class)
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS,7000)
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS,5000)
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
                         ChannelPipeline pipeline = ch.pipeline();
                         pipeline.addLast(new IdleStateHandler(5,3,0, TimeUnit.SECONDS));
-                        pipeline.addLast(new LoggingHandler());
+//                        pipeline.addLast(new LoggingHandler());
                         pipeline.addLast(new RpcDecoder());
                         pipeline.addLast(new RpcEncoder());
                         pipeline.addLast(new ClientHandler());
@@ -80,31 +80,42 @@ public class RpcClient {
         channelProvider = SingletonFactory.getInstance(ChannelPool.class);
     }
 
-    public Channel doConnect(InetSocketAddress inetSocketAddress) throws ExecutionException, InterruptedException {
+    public Channel doConnect(InetSocketAddress inetSocketAddress) throws  RpcException {
         CompletableFuture<Channel> completeFuture = new CompletableFuture<>();
         bootstrap.connect(inetSocketAddress).addListener((ChannelFutureListener) future -> {
             if(future.isSuccess() ) {
                 log.info("连接成功[{}]",inetSocketAddress);
                 completeFuture.complete(future.channel());
             }else {
-                EventLoop eventLoop = future.channel().eventLoop();
-                eventLoop.schedule(() -> doConnect(inetSocketAddress),5,TimeUnit.SECONDS);
+                if (atomicInteger.get()<=5) {
+                    log.info("连接失败，重试第{}次", atomicInteger.get());
+                    atomicInteger.addAndGet(1);
+                    completeFuture.complete(doConnect(inetSocketAddress));
+                }else {
+                    atomicInteger.set(1);
+                    log.error("error:连接失败");
+                    throw new RpcException("连接失败");
+                }
             }
         });
-        return completeFuture.get();
+        try {
+            return completeFuture.get(26,TimeUnit.SECONDS);
+        } catch (Exception e) {
+            throw new RpcException("连接超时。。。");
+        }
     }
 
-    public Channel reConnect(Channel channel) throws ExecutionException, InterruptedException {
+    public Channel reConnect(Channel channel) throws RpcException {
         InetSocketAddress inetSocketAddress = channelProvider.getInetSocketAddress(channel.id().toString());
         return getChannel(inetSocketAddress);
     }
 
-    public Object sendRequest(RpcRequest request) throws RpcException, ExecutionException, InterruptedException {
+    //消息发送失败不重传，直接抛出异常
+    public Object sendRequest(RpcRequest request) throws RpcException {
         InetSocketAddress inetSocketAddress = discovery.lookupService(request);
         Channel channel = getChannel(inetSocketAddress);
         DefaultPromise<RpcResponse<Object>> promise = new DefaultPromise<>(channel.eventLoop());
         if (channel.isActive()) {
-            log.info("是活着的");
             responseContainer.put(request.getRequestId(),promise);
             channel.writeAndFlush(request).addListener((ChannelFutureListener) future -> {
                 if (future.isSuccess()) {
@@ -113,20 +124,17 @@ public class RpcClient {
                     future.channel().close();
                     promise.setFailure(future.cause());
                     log.error("发送失败",future.cause());
-                    EventLoop eventExecutors = future.channel().eventLoop();
-                    eventExecutors.schedule(() -> sendRequest(request), 5, TimeUnit.SECONDS);
+                    throw new RpcException("远程调用失败");
                 }
             });
         } else {
-            log.info("channel is inactive, retrying...");
-            EventLoop eventExecutors = channel.eventLoop();
-            eventExecutors.schedule(() -> sendRequest(request), 5, TimeUnit.SECONDS);
+            log.info("channel is inactive");
 
         }
         return promise;
     }
 
-    public Channel getChannel(InetSocketAddress address) throws ExecutionException, InterruptedException {
+    public Channel getChannel(InetSocketAddress address) throws  RpcException {
 
         Channel channel = channelProvider.getChannel(address);
         if (channel == null ) {

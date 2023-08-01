@@ -32,4 +32,9 @@ public class TestController {
         List<User> friends = helloService.getFriends(my);
         System.out.println(friends);
     }
+
+    @Override
+    public String toString() {
+        return "TestController{}";
+    }
 }

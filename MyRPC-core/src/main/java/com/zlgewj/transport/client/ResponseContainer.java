@@ -3,9 +3,7 @@ package com.zlgewj.transport.client;
 import com.zlgewj.transport.dto.RpcResponse;
 import io.netty.util.concurrent.Promise;
 
-import javax.xml.ws.Response;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**

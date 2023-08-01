@@ -1,6 +1,5 @@
 package com.zlgewj.spring;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import com.zlgewj.annotation.RpcReference;
 import com.zlgewj.annotation.RpcService;
 import com.zlgewj.config.RpcServiceDefinition;
@@ -13,7 +12,6 @@ import com.zlgewj.transport.client.RpcClient;
 import com.zlgewj.utils.PropertiesUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.NamedBean;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 

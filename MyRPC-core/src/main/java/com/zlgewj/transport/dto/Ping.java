@@ -1,6 +1,9 @@
 package com.zlgewj.transport.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.ToString;
 
 /**
  * @author zlgewj

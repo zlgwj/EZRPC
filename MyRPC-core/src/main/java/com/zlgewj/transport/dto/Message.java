@@ -3,7 +3,6 @@ package com.zlgewj.transport.dto;
 import lombok.Data;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author zlgewj

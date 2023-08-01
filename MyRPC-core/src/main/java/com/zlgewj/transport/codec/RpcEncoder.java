@@ -1,6 +1,5 @@
 package com.zlgewj.transport.codec;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
 import com.zlgewj.constants.PropertyConstant;
 import com.zlgewj.enums.SerializeTypeEnum;
 import com.zlgewj.extension.ExtensionLoader;
@@ -9,11 +8,7 @@ import com.zlgewj.transport.dto.Message;
 import com.zlgewj.utils.PropertiesUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelOutboundHandlerAdapter;
-import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.MessageToByteEncoder;
-import javafx.util.Builder;
-import jdk.nashorn.internal.ir.RuntimeNode;
 import lombok.extern.slf4j.Slf4j;
 
 /**

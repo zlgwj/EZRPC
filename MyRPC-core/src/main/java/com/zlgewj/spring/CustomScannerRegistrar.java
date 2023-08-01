@@ -1,11 +1,9 @@
 package com.zlgewj.spring;
 
-import com.esotericsoftware.minlog.Log;
 import com.zlgewj.annotation.RpcScan;
 import com.zlgewj.annotation.RpcService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.propertyeditors.CustomCollectionEditor;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.annotation.AnnotationAttributes;

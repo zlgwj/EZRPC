@@ -1,9 +1,7 @@
 package com.zlgewj.transport.dto;
 
-import com.zlgewj.serialize.Serializer;
 import lombok.*;
 
-import java.io.PipedReader;
 import java.io.Serializable;
 
 /**

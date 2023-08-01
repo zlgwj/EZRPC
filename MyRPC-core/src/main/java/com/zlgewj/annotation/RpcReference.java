@@ -2,7 +2,6 @@ package com.zlgewj.annotation;
 
 
 import java.lang.annotation.*;
-import java.util.zip.Deflater;
 
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

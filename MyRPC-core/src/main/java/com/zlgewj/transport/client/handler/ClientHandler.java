@@ -1,6 +1,5 @@
 package com.zlgewj.transport.client.handler;
 
-import com.esotericsoftware.minlog.Log;
 import com.zlgewj.exception.RpcException;
 import com.zlgewj.factory.SingletonFactory;
 import com.zlgewj.transport.client.ResponseContainer;
@@ -9,7 +8,6 @@ import com.zlgewj.transport.dto.ErrorMessage;
 import com.zlgewj.transport.dto.Message;
 import com.zlgewj.transport.dto.Pong;
 import com.zlgewj.transport.dto.RpcResponse;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
