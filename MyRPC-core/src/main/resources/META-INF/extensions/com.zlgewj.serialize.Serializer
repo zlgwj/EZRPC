@@ -1,1 +1,2 @@
 kryo=com.zlgewj.serialize.kryo.KryoSerializer
+java=com.zlgewj.serialize.java.JavaSerializer

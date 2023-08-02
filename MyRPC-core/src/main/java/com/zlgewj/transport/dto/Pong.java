@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 /**
  * @author zlgewj
  * @version 1.0
@@ -14,7 +16,7 @@ import lombok.ToString;
 @Builder
 @Data
 @ToString
-public class Pong extends Message{
+public class Pong extends Message implements Serializable {
     private static final Integer type = 4;
     private final String name = "pong";
 

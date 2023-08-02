@@ -23,10 +23,10 @@ import java.util.List;
  * @since  2020年06月01日 15:16:00
  */
 @Slf4j
-public class ZkServiceDiscoveryImpl implements ServiceDiscovery {
+public class ZkServiceDiscovery implements ServiceDiscovery {
     private final LoadBalance loadBalance;
 
-    public ZkServiceDiscoveryImpl() {
+    public ZkServiceDiscovery() {
         loadBalance = ExtensionLoader.getExtensionLoader(LoadBalance.class).getExtension(PropertiesUtil.getProperty(PropertyConstant.LOAD_BALANCE));
     }
 

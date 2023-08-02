@@ -1,1 +1,2 @@
 zookeeper=com.zlgewj.provider.zk.ZkServiceProvider
+nacos=com.zlgewj.provider.nacos.NacosServiceProvider

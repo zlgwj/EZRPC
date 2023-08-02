@@ -1,1 +1,2 @@
-zookeeper=com.zlgewj.registry.zk.ZkServiceRegistryImpl
+zookeeper=com.zlgewj.registry.zk.ZkServiceRegistry
+nacos=com.zlgewj.registry.nacos.NacosServiceRegistry
