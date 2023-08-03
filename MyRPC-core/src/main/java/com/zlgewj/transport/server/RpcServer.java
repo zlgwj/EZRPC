@@ -1,10 +1,10 @@
 package com.zlgewj.transport.server;
 
+import com.zlgewj.config.RpcConfiguration;
 import com.zlgewj.transport.codec.RpcDecoder;
 import com.zlgewj.transport.codec.RpcEncoder;
 import com.zlgewj.transport.server.handler.ServerHandler;
 import com.zlgewj.utils.IPV4Util;
-import com.zlgewj.utils.PropertiesUtil;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -61,13 +61,15 @@ public class RpcServer {
                         });
                     }
                 });
-        ChannelFuture sync = serverBootstrap.bind(new InetSocketAddress(Objects.requireNonNull(IPV4Util.getLocalHostExactAddress()).getHostAddress(), PropertiesUtil.getServerPort()));
+        ChannelFuture sync = serverBootstrap.bind(new InetSocketAddress(Objects.requireNonNull(IPV4Util.getLocalHostExactAddress()).getHostAddress(), RpcConfiguration.getPort()));
         sync.addListener((ChannelFutureListener) future -> {
             if(future.isSuccess()) {
                 log.info("启动成功...");
+            }else {
+                System.out.println(future.cause());
             }
         });
-        sync.channel().closeFuture().sync();
+        ChannelFuture close = sync.channel().closeFuture().sync();
         log.info("关闭。。。。。。");
         boss.shutdownGracefully();
         worker.shutdownGracefully();

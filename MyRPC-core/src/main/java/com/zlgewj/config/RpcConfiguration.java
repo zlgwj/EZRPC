@@ -12,18 +12,27 @@ import java.lang.reflect.Field;
  */
 
 
+
 public class RpcConfiguration {
     private static String serialize;
     private static String discovery;
     private static String registrarAddress;
     private static String loadbalance;
+    private static Integer port = 1017;
 
     static {
         Field[] declaredFields = RpcConfiguration.class.getDeclaredFields();
         for (Field declaredField : declaredFields) {
             declaredField.setAccessible(true);
             try {
-                declaredField.set(null, PropertiesUtil.getProperty(declaredField.getName()));
+                String property = PropertiesUtil.getProperty(declaredField.getName());
+                if (!"".equals(property)) {
+                    if ("port".equals(declaredField.getName())) {
+                        declaredField.set(null, Integer.parseInt(property));
+                    }else {
+                        declaredField.set(null, property);
+                    }
+                }
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
@@ -43,6 +52,9 @@ public class RpcConfiguration {
 
     public static String getLoadbalance() {
         return loadbalance;
+    }
+    public static Integer getPort() {
+        return port;
     }
 
 

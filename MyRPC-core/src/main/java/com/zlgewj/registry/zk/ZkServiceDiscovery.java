@@ -2,14 +2,13 @@ package com.zlgewj.registry.zk;
 
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.zlgewj.constants.PropertyConstant;
+import com.zlgewj.config.RpcConfiguration;
 import com.zlgewj.exception.RpcException;
 import com.zlgewj.extension.ExtensionLoader;
 import com.zlgewj.locdbalance.LoadBalance;
 import com.zlgewj.registry.ServiceDiscovery;
 import com.zlgewj.registry.zk.util.CuratorUtils;
 import com.zlgewj.transport.dto.RpcRequest;
-import com.zlgewj.utils.PropertiesUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 
@@ -27,7 +26,7 @@ public class ZkServiceDiscovery implements ServiceDiscovery {
     private final LoadBalance loadBalance;
 
     public ZkServiceDiscovery() {
-        loadBalance = ExtensionLoader.getExtensionLoader(LoadBalance.class).getExtension(PropertiesUtil.getProperty(PropertyConstant.LOAD_BALANCE));
+        loadBalance = ExtensionLoader.getExtensionLoader(LoadBalance.class).getExtension(RpcConfiguration.getLoadbalance());
     }
 
     @Override

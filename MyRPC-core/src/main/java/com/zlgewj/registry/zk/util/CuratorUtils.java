@@ -1,8 +1,7 @@
 package com.zlgewj.registry.zk.util;
 
 import cn.hutool.core.util.StrUtil;
-import com.zlgewj.constants.PropertyConstant;
-import com.zlgewj.utils.PropertiesUtil;
+import com.zlgewj.config.RpcConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
@@ -84,7 +83,7 @@ public final class CuratorUtils {
 
     public static CuratorFramework getZkClient() {
         // check if user has set zk address
-        String zookeeperAddress = PropertiesUtil.getProperty(PropertyConstant.REGISTRAR_ADDRESS);
+        String zookeeperAddress = RpcConfiguration.getRegistrarAddress();
         zookeeperAddress = StrUtil.isAllBlank(zookeeperAddress) ? DEFAULT_ZOOKEEPER_ADDRESS : zookeeperAddress;
         // if zkClient has been started, return directly
         if (zkClient != null && zkClient.getState() == CuratorFrameworkState.STARTED) {

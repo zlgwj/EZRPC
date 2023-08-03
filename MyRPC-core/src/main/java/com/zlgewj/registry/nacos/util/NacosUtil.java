@@ -4,8 +4,7 @@ import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingFactory;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
-import com.zlgewj.constants.PropertyConstant;
-import com.zlgewj.utils.PropertiesUtil;
+import com.zlgewj.config.RpcConfiguration;
 
 import java.util.List;
 import java.util.Properties;
@@ -22,7 +21,7 @@ public class NacosUtil {
 
     private static NamingService namingService;
     static {
-        String property = PropertiesUtil.getProperty(PropertyConstant.REGISTRAR_ADDRESS);
+        String property = RpcConfiguration.getRegistrarAddress();
         Properties properties = new Properties();
         properties.put("serverAddr",property);
         try {

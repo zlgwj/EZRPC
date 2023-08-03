@@ -1,13 +1,12 @@
 package com.zlgewj.provider.nacos;
 
+import com.zlgewj.config.RpcConfiguration;
 import com.zlgewj.config.RpcServiceDefinition;
-import com.zlgewj.constants.PropertyConstant;
 import com.zlgewj.exception.RpcException;
 import com.zlgewj.extension.ExtensionLoader;
 import com.zlgewj.provider.ServiceProvider;
 import com.zlgewj.registry.ServiceRegistry;
 import com.zlgewj.utils.IPV4Util;
-import com.zlgewj.utils.PropertiesUtil;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
@@ -29,7 +28,7 @@ public class NacosServiceProvider implements ServiceProvider {
     public NacosServiceProvider() {
         serviceMap = new ConcurrentHashMap<>();
         registeredService = ConcurrentHashMap.newKeySet();
-        serviceRegistry = ExtensionLoader.getExtensionLoader(ServiceRegistry.class).getExtension(PropertiesUtil.getProperty(PropertyConstant.DISCOVERY_TYPE));
+        serviceRegistry = ExtensionLoader.getExtensionLoader(ServiceRegistry.class).getExtension(RpcConfiguration.getRegistrar());
     }
 
     @Override
@@ -50,7 +49,7 @@ public class NacosServiceProvider implements ServiceProvider {
     @Override
     public void publishService(RpcServiceDefinition rpcServiceDefinition) {
         addService(rpcServiceDefinition);
-        InetSocketAddress inetSocketAddress = new InetSocketAddress(IPV4Util.getLocalHostExactAddress().getHostAddress() , PropertiesUtil.getServerPort());
+        InetSocketAddress inetSocketAddress = new InetSocketAddress(IPV4Util.getLocalHostExactAddress().getHostAddress() , RpcConfiguration.getPort());
         serviceRegistry.registerService(rpcServiceDefinition.getServiceName(), inetSocketAddress);
     }
 }

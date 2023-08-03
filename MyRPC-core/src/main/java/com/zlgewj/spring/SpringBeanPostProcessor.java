@@ -2,14 +2,13 @@ package com.zlgewj.spring;
 
 import com.zlgewj.annotation.RpcReference;
 import com.zlgewj.annotation.RpcService;
+import com.zlgewj.config.RpcConfiguration;
 import com.zlgewj.config.RpcServiceDefinition;
-import com.zlgewj.constants.PropertyConstant;
 import com.zlgewj.extension.ExtensionLoader;
 import com.zlgewj.factory.SingletonFactory;
 import com.zlgewj.provider.ServiceProvider;
 import com.zlgewj.proxy.RpcProxy;
 import com.zlgewj.transport.client.RpcClient;
-import com.zlgewj.utils.PropertiesUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -31,7 +30,7 @@ public class SpringBeanPostProcessor implements BeanPostProcessor {
     private final RpcClient client;
 
     public SpringBeanPostProcessor() {
-        serviceProvider = ExtensionLoader.getExtensionLoader(ServiceProvider.class).getExtension(PropertiesUtil.getProperty(PropertyConstant.DISCOVERY_TYPE));
+        serviceProvider = ExtensionLoader.getExtensionLoader(ServiceProvider.class).getExtension(RpcConfiguration.getRegistrar());
         client = SingletonFactory.getInstance(RpcClient.class);
     }
 
@@ -71,7 +70,6 @@ public class SpringBeanPostProcessor implements BeanPostProcessor {
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
-
             }
         }
         return bean;

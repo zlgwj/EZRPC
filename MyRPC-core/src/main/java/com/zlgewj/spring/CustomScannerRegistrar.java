@@ -11,7 +11,6 @@ import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.StandardAnnotationMetadata;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
 
@@ -42,17 +41,12 @@ public class CustomScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
         if (basePackages.length == 0 ) {
             basePackages = new String[] {((StandardAnnotationMetadata) importingClassMetadata).getIntrospectedClass().getPackage().getName()};
         }
-
         CustomScanner customScanner = new CustomScanner(registry, RpcService.class);
-        CustomScanner springScanner = new CustomScanner(registry, Component.class);
         if (resourceLoader != null ) {
             customScanner.setResourceLoader(resourceLoader);
-            springScanner.setResourceLoader(resourceLoader);
         }
         int scan = customScanner.scan(basePackages);
         log.info("扫描到services【{}】个",scan);
-        int scan1 = springScanner.scan("com.zlgewj");
-        log.info("扫描到component【{}】个",scan1);
         ImportBeanDefinitionRegistrar.super.registerBeanDefinitions(importingClassMetadata, registry);
     }
 }

@@ -1,11 +1,10 @@
 package com.zlgewj.transport.codec;
 
-import com.zlgewj.constants.PropertyConstant;
+import com.zlgewj.config.RpcConfiguration;
 import com.zlgewj.enums.SerializeTypeEnum;
 import com.zlgewj.extension.ExtensionLoader;
 import com.zlgewj.serialize.Serializer;
 import com.zlgewj.transport.dto.Message;
-import com.zlgewj.utils.PropertiesUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
@@ -25,7 +24,7 @@ public class RpcEncoder extends MessageToByteEncoder<Object> {
         if (msg instanceof Message) {
             Message message = (Message) msg;
             int type = message.getType();
-            String serializeType = PropertiesUtil.getProperty(PropertyConstant.SERIALIZER_TYPE);
+            String serializeType = RpcConfiguration.getSerialize();
             SerializeTypeEnum serializeTypeEnum = SerializeTypeEnum.getByName(serializeType);
             Serializer serializer = ExtensionLoader.getExtensionLoader(Serializer.class).getExtension(serializeType);
             byte[] bytes = serializer.serialize(msg);

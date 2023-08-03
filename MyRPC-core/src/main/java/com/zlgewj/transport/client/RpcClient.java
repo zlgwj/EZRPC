@@ -1,6 +1,6 @@
 package com.zlgewj.transport.client;
 
-import com.zlgewj.constants.PropertyConstant;
+import com.zlgewj.config.RpcConfiguration;
 import com.zlgewj.exception.RpcException;
 import com.zlgewj.extension.ExtensionLoader;
 import com.zlgewj.factory.SingletonFactory;
@@ -11,7 +11,6 @@ import com.zlgewj.transport.codec.RpcEncoder;
 import com.zlgewj.transport.dto.Ping;
 import com.zlgewj.transport.dto.RpcRequest;
 import com.zlgewj.transport.dto.RpcResponse;
-import com.zlgewj.utils.PropertiesUtil;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -74,7 +73,7 @@ public class RpcClient {
 
                     }
                 });
-        String discoveryName = PropertiesUtil.getProperty(PropertyConstant.DISCOVERY_TYPE);
+        String discoveryName = RpcConfiguration.getRegistrar();
         discovery = ExtensionLoader.getExtensionLoader(ServiceDiscovery.class).getExtension(discoveryName);
         responseContainer = SingletonFactory.getInstance(ResponseContainer.class);
         channelProvider = SingletonFactory.getInstance(ChannelPool.class);

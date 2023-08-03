@@ -1,13 +1,12 @@
 package com.zlgewj.provider.zk;
 
+import com.zlgewj.config.RpcConfiguration;
 import com.zlgewj.config.RpcServiceDefinition;
-import com.zlgewj.constants.PropertyConstant;
 import com.zlgewj.exception.RpcException;
 import com.zlgewj.extension.ExtensionLoader;
 import com.zlgewj.provider.ServiceProvider;
 import com.zlgewj.registry.ServiceRegistry;
 import com.zlgewj.utils.IPV4Util;
-import com.zlgewj.utils.PropertiesUtil;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
@@ -30,7 +29,7 @@ public class ZkServiceProvider implements ServiceProvider {
 
         this.serviceMap = new ConcurrentHashMap<>();
         this.registeredService = ConcurrentHashMap.newKeySet();
-        this.serviceRegistry = ExtensionLoader.getExtensionLoader(ServiceRegistry.class).getExtension(PropertiesUtil.getProperty(PropertyConstant.DISCOVERY_TYPE));
+        this.serviceRegistry = ExtensionLoader.getExtensionLoader(ServiceRegistry.class).getExtension(RpcConfiguration.getRegistrar());
     }
 
     @Override
@@ -53,6 +52,6 @@ public class ZkServiceProvider implements ServiceProvider {
     @Override
     public void publishService(RpcServiceDefinition rpcServiceDefinition) {
         addService(rpcServiceDefinition);
-        serviceRegistry.registerService(rpcServiceDefinition.getServiceName(), new InetSocketAddress(Objects.requireNonNull(IPV4Util.getLocalHostExactAddress()).getHostAddress(),PropertiesUtil.getServerPort()));
+        serviceRegistry.registerService(rpcServiceDefinition.getServiceName(), new InetSocketAddress(Objects.requireNonNull(IPV4Util.getLocalHostExactAddress()).getHostAddress(),RpcConfiguration.getPort()));
     }
 }

@@ -1,14 +1,13 @@
 package com.zlgewj.registry.nacos;
 
 import com.alibaba.nacos.api.exception.NacosException;
-import com.zlgewj.constants.PropertyConstant;
+import com.zlgewj.config.RpcConfiguration;
 import com.zlgewj.exception.RpcException;
 import com.zlgewj.extension.ExtensionLoader;
 import com.zlgewj.locdbalance.LoadBalance;
 import com.zlgewj.registry.ServiceDiscovery;
 import com.zlgewj.registry.nacos.util.NacosUtil;
 import com.zlgewj.transport.dto.RpcRequest;
-import com.zlgewj.utils.PropertiesUtil;
 
 import java.net.InetSocketAddress;
 import java.util.List;
@@ -24,7 +23,7 @@ public class NacosServiceDiscovery implements ServiceDiscovery {
     private final LoadBalance loadBalance;
 
     public NacosServiceDiscovery() {
-        this.loadBalance = ExtensionLoader.getExtensionLoader(LoadBalance.class).getExtension(PropertiesUtil.getProperty(PropertyConstant.LOAD_BALANCE));
+        this.loadBalance = ExtensionLoader.getExtensionLoader(LoadBalance.class).getExtension(RpcConfiguration.getLoadbalance());
     }
 
     @Override

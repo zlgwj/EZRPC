@@ -1,11 +1,10 @@
 package com.zlgewj.transport.server.handler;
 
-import com.zlgewj.constants.PropertyConstant;
+import com.zlgewj.config.RpcConfiguration;
 import com.zlgewj.constants.RpcMessageCode;
 import com.zlgewj.extension.ExtensionLoader;
 import com.zlgewj.provider.ServiceProvider;
 import com.zlgewj.transport.dto.*;
-import com.zlgewj.utils.PropertiesUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -25,7 +24,8 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     private final ServiceProvider serviceProvider;
 
     public ServerHandler() {
-        serviceProvider = ExtensionLoader.getExtensionLoader(ServiceProvider.class).getExtension(PropertiesUtil.getProperty(PropertyConstant.DISCOVERY_TYPE));
+//        获取注册中心类型
+        serviceProvider = ExtensionLoader.getExtensionLoader(ServiceProvider.class).getExtension(RpcConfiguration.getRegistrar());
     }
 
     @Override

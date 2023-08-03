@@ -3,7 +3,6 @@ package com.zlgewj.config;
 
 import com.zlgewj.registry.zk.util.CuratorUtils;
 import com.zlgewj.utils.IPV4Util;
-import com.zlgewj.utils.PropertiesUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetSocketAddress;
@@ -26,7 +25,7 @@ public class CustomShutdownHook {
     public void clearAll() {
         log.info("addShutdownHook for clearAll");
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            InetSocketAddress inetSocketAddress = new InetSocketAddress(Objects.requireNonNull(IPV4Util.getLocalHostExactAddress()).getHostAddress(), PropertiesUtil.getServerPort());
+            InetSocketAddress inetSocketAddress = new InetSocketAddress(Objects.requireNonNull(IPV4Util.getLocalHostExactAddress()).getHostAddress(), RpcConfiguration.getPort());
             CuratorUtils.clearRegistry(CuratorUtils.getZkClient(), inetSocketAddress);
         }));
     }
