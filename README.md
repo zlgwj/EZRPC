@@ -74,7 +74,7 @@
 
    
 
-6. 调用 open（） 方法
+6. 调用 open() 方法
 
    ```java
    @RpcScan(packages = {"com.zlgewj"})
